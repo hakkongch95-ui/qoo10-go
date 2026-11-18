@@ -10,29 +10,35 @@
   body{display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:100dvh;
        font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
        color:#222;text-align:center;padding:0 24px;box-sizing:border-box}
-  .box{display:flex;flex-direction:column;align-items:center;gap:20px}
+  .box{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:320px}
   .spin{width:40px;height:40px;border:4px solid #eee;border-top-color:#e8173c;border-radius:50%;animation:r .8s linear infinite}
   @keyframes r{to{transform:rotate(360deg)}}
-  .msg{font-size:20px;font-weight:700;letter-spacing:.02em}
-  .sub{font-size:13px;color:#888}
-  .sub a{color:#888}
+  .msg{font-size:20px;font-weight:700}
+  .sub{font-size:13px;color:#888}.sub a{color:#888}
+  .btn{display:block;width:100%;padding:14px 0;border-radius:10px;font-size:16px;font-weight:700;text-decoration:none}
+  .app{background:#e8173c;color:#fff}.web{background:#f2f2f2;color:#333}
 </style>
 <script>
 (function(){
   var DEST = "https://www.qoo10.jp/g/1103102572/";
   var GA_ID = "G-5FW9B64SSQ";
-  var done = false;
-  function go(){ if(!done){ done = true; location.replace(DEST); } }
-  if (!/^G-[A-Z0-9]+$/.test(GA_ID) || GA_ID === "G-XXXXXXXXXX") { go(); return; }
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', GA_ID, { send_page_view: false });
-  gtag('event', "test3", { transport_type: 'beacon', event_callback: go });
-  var s = document.createElement('script'); s.async = true;
-  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-  document.head.appendChild(s);
-  setTimeout(go, 700);
+  function track(name){
+    try{
+      var cid; try{ cid = localStorage.getItem('_qg_cid'); }catch(e){}
+      if(!cid){ cid = Math.floor(Math.random()*2147483647) + '.' + Math.floor(Date.now()/1000); try{ localStorage.setItem('_qg_cid', cid); }catch(e){} }
+      var sid = Math.floor(Date.now()/1000);
+      var q = ['v=2','tid='+GA_ID,'cid='+encodeURIComponent(cid),'_p='+Math.floor(Math.random()*1e9),
+               'sid='+sid,'sct=1','seg=1','_s=1','_ss=1','_nsi=1',
+               'ul='+encodeURIComponent((navigator.language||'').toLowerCase()),
+               'sr='+screen.width+'x'+screen.height,
+               'dl='+encodeURIComponent(location.href),'dr='+encodeURIComponent(document.referrer||''),
+               'dt='+encodeURIComponent(document.title),'en='+encodeURIComponent(name),'_et=1'];
+      var url = 'https://www.google-analytics.com/g/collect?' + q.join('&');
+      if (!(navigator.sendBeacon && navigator.sendBeacon(url))) { fetch(url,{method:'POST',mode:'no-cors',keepalive:true}); }
+    }catch(e){}
+  }
+  track("test3");
+  location.replace(DEST);
 })();
 </script>
 </head>
