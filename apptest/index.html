@@ -34,7 +34,11 @@
   var started = false;
   function openApp(){
     if (started) return; started = true;
-    if (isAndroid) { location.replace(INTENT); return; }
+    if (isAndroid) {
+      location.href = INTENT;
+      setTimeout(function(){ if (!document.hidden) location.replace(WEB); }, 1500);
+      return;
+    }
     if (isIOS) {
       location.href = SCHEME;
       setTimeout(function(){ if (!document.hidden) location.replace(WEB); }, 1500);
