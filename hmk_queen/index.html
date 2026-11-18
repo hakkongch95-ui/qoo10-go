@@ -20,7 +20,7 @@
 </style>
 <script>
 (function(){
-  var DEST = "https://www.qoo10.jp/g/1103102572/";
+  var WEB = "https://www.qoo10.jp/g/1103102572/";
   var GA_ID = "G-5FW9B64SSQ";
   function track(name){
     try{
@@ -37,8 +37,20 @@
       if (!(navigator.sendBeacon && navigator.sendBeacon(url))) { fetch(url,{method:'POST',mode:'no-cors',keepalive:true}); }
     }catch(e){}
   }
+  var enc = encodeURIComponent(WEB);
+  var SCHEME = "qoo10jp://moveTab?url=" + enc;
+  var INTENT = "intent://moveTab?url=" + enc + "#Intent;scheme=qoo10jp;package=net.giosis.shopping.jp;S.browser_fallback_url=" + enc + ";end";
+  var ua = navigator.userAgent;
+  var isAndroid = /Android/i.test(ua);
+  var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  window.__links = { scheme: isAndroid ? INTENT : SCHEME, web: WEB };
   track("hmk_queen");
-  location.replace(DEST);
+  if (isAndroid || isIOS) {
+    location.href = isAndroid ? INTENT : SCHEME;
+    setTimeout(function(){ if (!document.hidden) location.replace(WEB); }, 1500);
+  } else {
+    location.replace(WEB);
+  }
 })();
 </script>
 </head>
@@ -46,7 +58,9 @@
   <div class="box">
     <div class="spin" aria-hidden="true"></div>
     <div class="msg">Qoo10公式に移動中…</div>
-    <div class="sub"><a href="https://www.qoo10.jp/g/1103102572/">移動しない場合はこちら</a></div>
+    <a class="btn app" id="a" href="#">アプリで開く</a>
+    <a class="btn web" id="w" href="https://www.qoo10.jp/g/1103102572/">ブラウザで開く</a>
   </div>
+  <script>document.getElementById('a').href = window.__links.scheme;</script>
 </body>
 </html>
